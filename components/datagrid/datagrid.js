@@ -1210,6 +1210,9 @@ Datagrid.prototype = {
       }
       return true;
     }).off('keyup.datagrid').on('keyup.datagrid', '.datagrid-filter-wrapper input', () => {
+      if (this.activeCell && this.activeCell.isFocused) {
+        this.activeCell.isFocused = false;
+      }
       clearTimeout(typingTimer);
       typingTimer = setTimeout(() => {
         self.applyFilter();
