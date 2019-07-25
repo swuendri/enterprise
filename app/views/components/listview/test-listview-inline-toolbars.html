@@ -1,6 +1,6 @@
 <div class="row">
   <div class="twelve columns">
-    <h2 class="fieldset-title">ListView - With a Toolbar</h2>
+      <h2 class="fieldset-title">ListView - With a Toolbar</h2>
   </div>
 </div>
 
@@ -38,31 +38,19 @@
         <p class="listview-heading">Task #{{task}}</p>
         <p class="listview-subheading">{{desc}} </p>
         <p class="listview-micro">Due: {{date}}</p>
-        <div id="regular-toolbar-example" class="toolbar" role="toolbar">
-          <div class="title">
-            &nbsp;
-          </div>
+        <div id="regular-toolbar-example" class="toolbar" data-options="{'rightAligned': true}" role="toolbar">
           <div class="buttonset">
 
             <button id="btn-row" class="btn" type="button">
-              <svg class="icon" focusable="false" aria-hidden="true" role="presentation">
-                <use xlink:href="#icon-add"></use>
-              </svg>
-              <span>Row</span>
+              <span>Find in Organizational tree</span>
             </button>
 
             <button id="btn-category" class="btn" type="button">
-              <svg class="icon" focusable="false" aria-hidden="true" role="presentation">
-                <use xlink:href="#icon-filter"></use>
-              </svg>
-              <span>Category</span>
+              <span>Find in Organizational Chart</span>
             </button>
 
-            <button id="btn-share" class="btn" disabled type="button">
-              <svg class="icon" focusable="false" aria-hidden="true" role="presentation">
-                <use xlink:href="#icon-mingle-share"></use>
-              </svg>
-              <span>Share</span>
+            <button id="btn-share" class="btn" type="button">
+              <span>Find in Employee List</span>
             </button>
           </div>
         </div>
