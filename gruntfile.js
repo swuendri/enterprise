@@ -1,9 +1,15 @@
+var sass = require('node-sass');
+
 module.exports = function(grunt) {
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
 
     sass: {
+      options: {
+        implementation: sass,
+        sourceMap: true
+      },
       dist: {
         files: {
           'public/stylesheets/grey-theme.css' : 'sass/grey-theme.scss',
@@ -78,5 +84,6 @@ module.exports = function(grunt) {
 
   // load all grunt tasks from 'node_modules' matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
+  //grunt.registerTask('default', ['jshint', 'sass', 'concat', 'uglify', 'copy:main']);
   grunt.registerTask('default', ['jshint', 'sass', 'concat', 'uglify', 'copy:main']);
 };

@@ -4,6 +4,7 @@ public/js/
 public/stylesheets/
 dist/css/
 dist/js/
+dist/svg/
 .DS_Store
 phantomjsdriver.log
 xunit.xml
