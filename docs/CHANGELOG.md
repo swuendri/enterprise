@@ -4,6 +4,10 @@
 
 ### v4.28.0 Features
 
+- `[Modal]` Improved handling of multiple Modal windows stemming from a single trigger element. ([ng#705](https://github.com/infor-design/enterprise-ng/issues/705))
+
+### v4.28.0 Important Changes
+
 ### v4.28.0 Fixes
 
 ## v4.27.0

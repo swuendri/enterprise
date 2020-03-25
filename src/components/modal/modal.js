@@ -1,6 +1,7 @@
 import * as debug from '../../utils/debug';
 import { warnAboutDeprecation } from '../../utils/deprecated';
 import { breakpoints } from '../../utils/breakpoints';
+import { modalManager } from './modal.manager';
 import { renderLoop, RenderLoopItem } from '../../utils/renderloop';
 import { utils } from '../../utils/utils';
 import { xssUtils } from '../../utils/xss';
@@ -90,6 +91,7 @@ function handleModalDefaults(settings) {
 function Modal(element, settings) {
   this.settings = utils.mergeSettings(element, settings, MODAL_DEFAULTS);
   this.settings = handleModalDefaults(this.settings);
+  this.originalElement = $(element);
   this.element = $(element);
   debug.logTimeStart(COMPONENT_NAME);
   this.init();
@@ -249,6 +251,8 @@ Modal.prototype = {
       this.renderButtonset();
     }
 
+    this.registerModal();
+
     this.element.appendTo('body');
     this.element[0].style.display = 'none';
   },
@@ -340,9 +344,30 @@ Modal.prototype = {
       }
     }
 
+    this.registerModal();
+
     utils.fixSVGIcons(this.element);
   },
 
+  /**
+   * Registers this modal component with the global Modal Manager, while setting up other links.
+   */
+  registerModal() {
+    // If the current `element` is not the original one the component was invoked against,
+    // add a second reference to this component API to the new element.
+    if (!this.originalElement.is(this.element)) {
+      this.originalElement.data('modalElementLink', this.element[0]);
+      this.element.data('modal', this);
+    }
+
+    // Register the modal into the global Modal manager
+    modalManager.register(this);
+  },
+
+  /**
+   * @private
+   * @returns {void}
+   */
   reStructure() {
     const body = $('.modal-body', this.element);
     const hr = $('hr:first-child', body);
@@ -1142,8 +1167,9 @@ Modal.prototype = {
   keepFocus() {
     const self = this;
 
+    /*
     // Escape key
-    $(document)
+    $(this.element)
       .off(`keydown.${self.namespace}`)
       .on(`keydown.${self.namespace}`, (e) => {
         const keyCode = e.which || e.keyCode;
@@ -1166,6 +1192,7 @@ Modal.prototype = {
           }
         }
       });
+    */
 
     // Cache tab fields and update them if the DOM changes
     const selector = ':focusable, [contenteditable], iframe';
@@ -1368,7 +1395,7 @@ Modal.prototype = {
 
       $('.skip-link').off(`focus.${self.namespace}`);
       $('body').off(`resize.${self.namespace}`);
-      $(document).off(`keydown.${self.namespace}`);
+      $(self.element).off(`keydown.${self.namespace}`);
 
       if (self.element.find('.detailed-message').length === 1) {
         $('body').off(`resize.${self.namespace}`);
@@ -1420,6 +1447,15 @@ Modal.prototype = {
         }
       });
       renderLoop.register(destroyTimer);
+
+      // Remove this modal instance from the global Modal manager.
+      modalManager.unregister(self);
+
+      // If the current `element` is not the original one the component was invoked against,
+      // remove the second reference to this component API on the new element.
+      if (self.originalElement instanceof $) {
+        $.removeData(self.originalElement[0], 'modalElementLink');
+      }
 
       $.removeData(self.element[0], COMPONENT_NAME);
     }
