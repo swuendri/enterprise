@@ -1,6 +1,7 @@
 import * as debug from '../../utils/debug';
 import { warnAboutDeprecation } from '../../utils/deprecated';
 import { breakpoints } from '../../utils/breakpoints';
+import { DOM } from '../../utils/dom';
 import { modalManager } from './modal.manager';
 import { renderLoop, RenderLoopItem } from '../../utils/renderloop';
 import { utils } from '../../utils/utils';
@@ -1112,7 +1113,9 @@ Modal.prototype = {
   get isFocused() {
     let componentHasFocus = false;
     const activeElem = document.activeElement;
-    const focusableElems = $.makeArray(this.element.find(':focusable, [contenteditable], iframe'));
+    const focusableElems = DOM.focusableElems(this.element[0]);
+
+    // Check each match for IDS components that may have a more complex focus routine
     focusableElems.forEach((elem) => {
       if (componentHasFocus) {
         return;
@@ -1126,12 +1129,17 @@ Modal.prototype = {
 
       // Dropdown/Multiselect
       if ($elem.is('div.dropdown, div.multiselect')) {
-        componentHasFocus = $elem.parent().prev('select').data('dropdown').isFocused;
+        componentHasFocus = $elem.parent().prev('select').data('dropdown')?.isFocused;
+      }
+
+      // Popupmenu
+      if ($elem.is('.btn-menu, .btn-actions')) {
+        componentHasFocus = $elem.data('popupmenu')?.isFocused;
       }
 
       // Searchfield
       if ($elem.is('.searchfield')) {
-        componentHasFocus = $elem.data('searchfield').isFocused;
+        componentHasFocus = $elem.data('searchfield')?.isFocused;
       }
     });
 

@@ -615,6 +615,25 @@ DOM.convertToHTMLElement = function convertToHTMLElement(item) {
 };
 
 /**
+ * Returns a list of all focusable elements contained within the current element.
+ * Somewhat lifted from https://gomakethings.com/how-to-get-the-first-and-last-focusable-elements-in-the-dom/
+ * @param {HTMLElement} el the element to search.
+ * @returns {array} containing the focusable elements.
+ */
+DOM.focusableElems = function focusableElems(el) {
+  const focusableElemSelector = [
+    'button',
+    '[href]',
+    'input',
+    'select',
+    'textarea',
+    '[tabindex]:not([tabindex="-1"])'
+  ];
+  const elems = el.querySelectorAll(focusableElemSelector.join(', '));
+  return utils.getArrayFromList(elems);
+};
+
+/**
  * Object deep copy.
  * For now, alias jQuery.extend
  * Eventually we'll replace this with a non-jQuery extend method.
