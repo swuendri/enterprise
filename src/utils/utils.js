@@ -627,10 +627,19 @@ DOM.focusableElems = function focusableElems(el) {
     'input',
     'select',
     'textarea',
-    '[tabindex]:not([tabindex="-1"])'
+    '[focusable]:not([focusable="false"])',
+    '[tabindex]:not([tabindex="-1"])',
+    '[contenteditable]',
+    'iframe'
   ];
   const elems = el.querySelectorAll(focusableElemSelector.join(', '));
-  return utils.getArrayFromList(elems);
+  const arrElems = utils.getArrayFromList(elems);
+  return arrElems.filter((elem) => {
+    if (elem.tagName.toLowerCase() === 'use') {
+      return false;
+    }
+    return true;
+  });
 };
 
 /**
