@@ -1119,6 +1119,10 @@ Modal.prototype = {
     let componentHasFocus = false;
     const activeElem = document.activeElement;
 
+    if (!this.tabbableElems) {
+      this.setFocusableElems();
+    }
+
     // Check each match for IDS components that may have a more complex focus routine
     this.tabbableElems.forEach((elem) => {
       if (componentHasFocus) {
@@ -1169,9 +1173,7 @@ Modal.prototype = {
    */
   setFocusableElems() {
     const elems = DOM.focusableElems(this.element[0]);
-    if (!this.tabbableElems) {
-      this.tabbableElems = elems;
-    }
+    this.tabbableElems = elems;
     this.tabbableElems.first = elems[0];
     this.tabbableElems.last = elems[elems.length - 1];
   },
@@ -1186,7 +1188,9 @@ Modal.prototype = {
       return;
     }
 
-    this.setFocusableElems();
+    if (!this.tabbableElems) {
+      this.setFocusableElems();
+    }
 
     let target;
     switch (place) {
@@ -1245,7 +1249,6 @@ Modal.prototype = {
     this.active = false;
 
     // Fire Events
-    debugger;
     self.element.trigger('close', self.isCancelled);
 
     // Restore focus
